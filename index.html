@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Salchipapa Lili 🍟</title>
+
+<style>
+:root {
+  --rojo: #e32624;
+  --amarillo: #ffcc25;
+  --fondo: #171313;
+  --tarjeta: #261f1f;
+  --texto: #fff8ec;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: var(--fondo);
+  color: var(--texto);
+}
+
+header {
+  text-align: center;
+  padding: 28px 15px;
+  background: linear-gradient(135deg, #a80d0d, #ed4025);
+}
+
+header h1 {
+  margin: 0;
+  font-size: 34px;
+  color: var(--amarillo);
+}
+
+header p { margin-bottom: 0; }
+
+.aviso {
+  background: #352817;
+  color: var(--amarillo);
+  text-align: center;
+  padding: 12px;
+  font-size: 14px;
+}
+
+main {
+  max-width: 1000px;
+  padding: 18px;
+  margin: auto;
+}
+
+h2 {
+  color: var(--amarillo);
+  margin-top: 28px;
+}
+
+.productos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 16px;
+}
+
+.producto {
+  background: var(--tarjeta);
+  border: 1px solid #493535;
+  border-radius: 15px;
+  padding: 16px;
+  overflow: hidden;
+}
+
+.producto img {
+  width: 100%;
+  height: 170px;
+  object-fit: cover;
+  border-radius: 10px;
+  background: #392b20;
+}
+
+.producto h3 {
+  color: var(--amarillo);
+  margin-bottom: 8px;
+}
+
+.precio {
+  font-size: 23px;
+  font-weight: bold;
+  color: #ff6254;
+}
+
+.descripcion {
+  color: #ddd0c6;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+label {
+  display: block;
+  margin: 12px 0 5px;
+  font-size: 14px;
+}
+
+select, input, textarea {
+  width: 100%;
+  padding: 11px;
+  margin-top: 4px;
+  border-radius: 8px;
+  border: 1px solid #665050;
+  background: #171313;
+  color: white;
+  font-size: 15px;
+}
+
+.check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 9px 0;
+}
+
+.check input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--rojo);
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  border-radius: 9px;
+  padding: 12px;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.agregar {
+  width: 100%;
+  background: var(--amarillo);
+  color: #241414;
+  margin-top: 15px;
+}
+
+.boton-rojo {
+  background: var(--rojo);
+  color: white;
+}
+
+.seccion {
+  margin-top: 28px;
+  background: var(--tarjeta);
+  padding: 18px;
+  border-radius: 14px;
+}
+
+.item-carrito {
+  border-bottom: 1px solid #514040;
+  padding: 12px 0;
+  line-height: 1.6;
+}
+
+.cantidad {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.cantidad button {
+  padding: 7px 13px;
+  background: #493535;
+  color: white;
+}
+
+.total {
+  font-size: 25px;
+  color: var(--amarillo);
+  font-weight: bold;
+  margin: 18px 0;
+}
+
+#enviar {
+  width: 100%;
+  background: #25d366;
+  color: #102516;
+  font-size: 17px;
+  padding: 16px;
+}
+
+.pie {
+  text-align: center;
+  padding: 25px;
+  color: #c5b5ab;
+  font-size: 13px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>🍟 Salchipapa Lili 🍟</h1>
+  <p>¡Preparadas con mucho sabor y cariño!</p>
+  <p>📍 Campoalegre · Sector Fundadores</p>
+</header>
+
+<div class="aviso">
+  🕔 Sábados y domingos · 5:00 p. m. a 11:00 p. m.
+  <br>🛵 Domicilio cercano: $1.000
+</div>
+
+<main>
+
+<h2>🍟 Nuestro menú</h2>
+<p>Elige tus productos, personalízalos y haz tu pedido por WhatsApp.</p>
+
+<div class="productos" id="productos"></div>
+
+<section class="seccion" id="zona-carrito">
+  <h2>🛒 Tu pedido</h2>
+  <div id="carrito">
+    <p>Tu carrito está vacío. ¡Agrega algo delicioso!</p>
+  </div>
+  <div class="total" id="total">Total: $0</div>
+</section>
+
+<section class="seccion">
+  <h2>📝 Datos para tu pedido</h2>
+
+  <label for="nombre">Tu nombre</label>
+  <input id="nombre" placeholder="¿Cómo te llamas?">
+
+  <label for="telefono">Tu número de contacto</label>
+  <input id="telefono" type="tel" placeholder="Tu celular">
+
+  <label for="entrega">¿Cómo quieres recibirlo?</label>
+  <select id="entrega" onchange="mostrarDireccion()">
+    <option value="Recoger en el punto">Recoger en el punto</option>
+    <option value="Domicilio cercano">Domicilio cercano (+$1.000)</option>
+  </select>
+
+  <div id="direccion-box" style="display:none">
+    <label for="direccion">Dirección del domicilio</label>
+    <textarea id="direccion" rows="2" placeholder="Barrio, calle, casa y referencias"></textarea>
+  </div>
+
+  <label for="pago">Método de pago</label>
+  <select id="pago">
+    <option value="Efectivo">Efectivo</option>
+    <option value="Nequi">Nequi</option>
+  </select>
+
+  <p class="descripcion">
+    Nequi: 315 200 9503 · Titular: Mateo Muñoz.
+    <br>Confirma el pago directamente con el negocio.
+  </p>
+
+  <label for="notas">Observaciones adicionales (opcional)</label>
+  <textarea id="notas" rows="2" placeholder="Alguna indicación para tu pedido"></textarea>
+
+  <div class="total" id="total-final">Total: $0</div>
+
+  <button id="enviar" onclick="enviarPedido()">
+    📲 HAZ TU PEDIDO POR WHATSAPP
+  </button>
+</section>
+
+</main>
+
+<div class="pie">
+  ❤️ Salchipapa Lili · Campoalegre, sector Fundadores
+  <br>¡Gracias por apoyar nuestro negocio!
+</div>
+
+<script>
+const WHATSAPP = "573152009503";
+
+const salsasDisponibles = [
+  "Tomate", "Rosada", "Piña", "Showi", "Ajo", "Salsa verde"
+];
+
+const productos = [
+  {
+    id: "sencilla",
+    nombre: "Salchipapa sencilla",
+    precio: 9000,
+    imagen: "salchipapa_sencilla.jpg",
+    descripcion: "Papa amarilla, salchicha y queso tajado.",
+    ingredientes: ["Queso tajado"],
+    extras: [
+      { nombre: "Extra de queso", precio: 1000 }
+    ]
+  },
+  {
+    id: "contodo",
+    nombre: "Salchipapa con todo",
+    precio: 12000,
+    imagen: "salchipapa_con_todo.jpg",
+    descripcion: "Papa amarilla, salchicha, queso, pollo y maicitos.",
+    ingredientes: ["Queso tajado", "Pollo desmechado", "Maicitos"],
+    extras: [
+      { nombre: "Extra de queso", precio: 1000 },
+      { nombre: "Extra de pollo", precio: 2000 },
+      { nombre: "Extra de maicitos", precio: 1000 }
+    ]
+  },
+  {
+    id: "grande",
+    nombre: "Salchipapa grande con todo",
+    precio: 15000,
+    imagen: "salchipapa_grande.jpg",
+    descripcion: "Porción grande, con dos tajadas de queso, pollo y maicitos.",
+    ingredientes: ["Queso tajado", "Pollo desmechado", "Maicitos"],
+    extras: [
+      { nombre: "Extra de queso", precio: 1000 },
+      { nombre: "Extra de pollo", precio: 2000 },
+      { nombre: "Extra de maicitos", precio: 1000 }
+    ]
+  },
+  {
+    id: "papa",
+    nombre: "Porción de papa",
+    precio: 6000,
+    imagen: "porcion_papa.jpg",
+    descripcion: "Deliciosa porción de papa amarilla.",
+    ingredientes: [],
+    extras: [
+      { nombre: "Extra de queso", precio: 1000 },
+      { nombre: "Extra de pollo", precio: 2000 },
+      { nombre: "Extra de maicitos", precio: 1000 }
+    ]
+  },
+  {
+    id: "coca",
+    nombre: "Coca-Cola personal 400 ml",
+    precio: 4000,
+    imagen: "coca_cola_400ml.jpg",
+    descripcion: "Coca-Cola personal bien fría.",
+    ingredientes: [],
+    extras: []
+  }
+];
+
+let carrito = [];
+
+const dinero = valor =>
+  "$" + valor.toLocaleString("es-CO");
+
+function dibujarProductos() {
+  const contenedor = document.getElementById("productos");
+
+  contenedor.innerHTML = productos.map(p => `
+    <article class="producto">
+      <img src="${p.imagen}" alt="${p.nombre}"
+           onerror="this.style.display='none'">
+
+      <h3>${p.nombre}</h3>
+      <div class="precio">${dinero(p.precio)}</div>
+      <p class="descripcion">${p.descripcion}</p>
+
+      ${p.ingredientes.length ? `
+        <label>Ingredientes que deseas quitar</label>
+        ${p.ingredientes.map((ing, i) => `
+          <label class="check">
+            <input type="checkbox" id="quita-${p.id}-${i}">
+            Sin ${ing.toLowerCase()}
+          </label>
+        `).join("")}
+      ` : ""}
+
+      ${p.extras.length ? `
+        <label>Agregar extras</label>
+        ${p.extras.map((ex, i) => `
+          <label class="check">
+            <input type="checkbox" id="extra-${p.id}-${i}">
+            ${ex.nombre} (+${dinero(ex.precio)})
+          </label>
+        `).join("")}
+      ` : ""}
+
+      ${p.id !== "coca" ? `
+        <label>Salsas gratis (elige las que quieras)</label>
+        ${salsasDisponibles.map((s, i) => `
+          <label class="check">
+            <input type="checkbox" id="salsa-${p.id}-${i}">
+            ${s}
+          </label>
+        `).join("")}
+      ` : ""}
+
+      <label for="nota-${p.id}">Nota para este producto (opcional)</label>
+      <input id="nota-${p.id}" placeholder="Ej. poca salsa">
+
+      <button class="agregar" onclick="agregar('${p.id}')">
+        ➕ Agregar al carrito
+      </button>
+    </article>
+  `).join("");
+}
+
+function agregar(id) {
+  const p = productos.find(x => x.id === id);
+  let extras = [];
+  let sin = [];
+  let salsas = [];
+  let precio = p.precio;
+
+  p.extras.forEach((ex, i) => {
+    const checkbox = document.getElementById(`extra-${id}-${i}`);
+    if (checkbox && checkbox.checked) {
+      extras.push(ex.nombre);
+      precio += ex.precio;
+    }
+  });
+
+  p.ingredientes.forEach((ing, i) => {
+    const checkbox = document.getElementById(`quita-${id}-${i}`);
+    if (checkbox && checkbox.checked) sin.push(ing);
+  });
+
+  if (id !== "coca") {
+    salsasDisponibles.forEach((s, i) => {
+      const checkbox = document.getElementById(`salsa-${id}-${i}`);
+      if (checkbox && checkbox.checked) salsas.push(s);
+    });
+  }
+
+  const nota = document.getElementById(`nota-${id}`).value.trim();
+
+  carrito.push({
+    clave: Date.now() + Math.random(),
+    id,
+    nombre: p.nombre,
+    precio,
+    extras,
+    sin,
+    salsas,
+    nota
+  });
+
+  // Limpiar la personalización después de agregar el producto.
+  p.extras.forEach((_, i) => {
+    const el = document.getElementById(`extra-${id}-${i}`);
+    if (el) el.checked = false;
+  });
+
+  p.ingredientes.forEach((_, i) => {
+    const el = document.getElementById(`quita-${id}-${i}`);
+    if (el) el.checked = false;
+  });
+
+  salsasDisponibles.forEach((_, i) => {
+    const el = document.getElementById(`salsa-${id}-${i}`);
+    if (el) el.checked = false;
+  });
+
+  document.getElementById(`nota-${id}`).value = "";
+
+  dibujarCarrito();
+
+  document.getElementById("zona-carrito").scrollIntoView({
+    behavior: "smooth"
+  });
+}
+
+function totalProductos() {
+  return carrito.reduce((s, item) => s + item.precio, 0);
+}
+
+function costoDomicilio() {
+  return document.getElementById("entrega").value === "Domicilio cercano"
+    ? 1000 : 0;
+}
+
+function dibujarCarrito() {
+  const contenedor = document.getElementById("carrito");
+
+  if (!carrito.length) {
+    contenedor.innerHTML = "<p>Tu carrito está vacío. ¡Agrega algo delicioso!</p>";
+  } else {
+    contenedor.innerHTML = carrito.map(item => `
+      <div class="item-carrito">
+        <strong>${item.nombre}</strong><br>
+        ${dinero(item.precio)}
+
+        ${item.sin.length ? `<br>Sin: ${item.sin.join(", ")}` : ""}
+        ${item.extras.length ? `<br>Extras: ${item.extras.join(", ")}` : ""}
+        ${item.salsas.length ? `<br>Salsas: ${item.salsas.join(", ")}` : ""}
+        ${item.nota ? `<br>Nota: ${item.nota}` : ""}
+
+        <div class="cantidad">
+          <button onclick="quitar('${item.clave}')">🗑️ Quitar</button>
+        </div>
+      </div>
+    `).join("");
+  }
+
+  const total = totalProductos() + costoDomicilio();
+  document.getElementById("total").textContent = "Total: " + dinero(total);
+  document.getElementById("total-final").textContent = "Total: " + dinero(total);
+}
+
+function quitar(clave) {
+  carrito = carrito.filter(item => String(item.clave) !== clave);
+  dibujarCarrito();
+}
+
+function mostrarDireccion() {
+  const esDomicilio =
+    document.getElementById("entrega").value === "Domicilio cercano";
+
+  document.getElementById("direccion-box").style.display =
+    esDomicilio ? "block" : "none";
+
+  dibujarCarrito();
+}
+
+function enviarPedido() {
+  if (!carrito.length) {
+    alert("Agrega al menos un producto a tu pedido.");
+    return;
+  }
+
+  const nombre = document.getElementById("nombre").value.trim();
+  const telefono = document.getElementById("telefono").value.trim();
+  const entrega = document.getElementById("entrega").value;
+  const direccion = document.getElementById("direccion").value.trim();
+  const pago = document.getElementById("pago").value;
+  const notas = document.getElementById("notas").value.trim();
+
+  if (!nombre || !telefono) {
+    alert("Escribe tu nombre y número de contacto.");
+    return;
+  }
+
+  if (entrega === "Domicilio cercano" && !direccion) {
+    alert("Escribe la dirección para el domicilio.");
+    return;
+  }
+
+  let mensaje = "🍟 *NUEVO PEDIDO - SALCHIPAPA LILI* 🍟\n\n";
+  mensaje += "👤 Cliente: " + nombre + "\n";
+  mensaje += "📱 Teléfono: " + telefono + "\n\n";
+  mensaje += "*PRODUCTOS:*\n";
+
+  carrito.forEach((item, i) => {
+    mensaje += `\n${i + 1}. ${item.nombre} — ${dinero(item.precio)}\n`;
+    if (item.sin.length) mensaje += "   Sin: " + item.sin.join(", ") + "\n";
+    if (item.extras.length) mensaje += "   Extras: " + item.extras.join(", ") + "\n";
+    if (item.salsas.length) mensaje += "   Salsas: " + item.salsas.join(", ") + "\n";
+    if (item.nota) mensaje += "   Nota: " + item.nota + "\n";
+  });
+
+  mensaje += "\n🚚 Entrega: " + entrega + "\n";
+
+  if (entrega === "Domicilio cercano") {
+    mensaje += "📍 Dirección: " + direccion + "\n";
+    mensaje += "🛵 Domicilio: " + dinero(1000) + "\n";
+  }
+
+  mensaje += "💳 Pago: " + pago + "\n";
+
+  if (notas) mensaje += "📝 Observaciones: " + notas + "\n";
+
+  mensaje += "\n💰 *TOTAL: " +
+    dinero(totalProductos() + costoDomicilio()) + "*\n";
+
+  mensaje += "\n📍 Campoalegre, sector Fundadores.";
+
+  const url = "https://wa.me/" + WHATSAPP +
+    "?text=" + encodeURIComponent(mensaje);
+
+  window.open(url, "_blank");
+}
+
+dibujarProductos();
+dibujarCarrito();
+</script>
+
+</body>
+</html>
